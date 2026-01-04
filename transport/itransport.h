@@ -21,7 +21,7 @@ public:
     virtual void close() = 0;
 };
 
-}; // Transport
+} // namespace Transport
 
 
 #endif // ITRANSPORT_H

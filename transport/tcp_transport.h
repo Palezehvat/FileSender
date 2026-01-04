@@ -1,5 +1,5 @@
-#ifndef TCPTRANSPORT_H
-#define TCPTRANSPORT_H
+#ifndef TCP_TRANSPORT_H
+#define TCP_TRANSPORT_H
 
 #include <cstring>
 #include "itransport.h"
@@ -33,6 +33,6 @@ private:
     TCPTransport(std::shared_ptr<spdlog::logger> logger, Socket socket);
 };
 
-}; // Transport
+} //namespace Transport
 
-#endif // TCPTRANSPORT_H
+#endif // TCP_TRANSPORT_H
