@@ -15,7 +15,7 @@ void TextMessenger::sendText(const std::string& text) {
     std::vector<uint8_t> data(text.begin(), text.end());
     Protocol::Packet packet(Protocol::PacketType::TextMessage, data);
 
-    auto serialized = Protocol::PacketSerializer::serialize(packet);
+    auto serialized = Protocol::PacketSerializer::serialize(packet, logger);
     auto encrypted = security.encrypt(serialized);
 
     transport.send(encrypted);
@@ -26,9 +26,8 @@ std::string TextMessenger::receiveText() {
     logger->trace("Start get text message");
     std::vector<uint8_t> encrypted;
     transport.receive(encrypted);
-
     auto decrypted = security.decrypt(encrypted);
-    Protocol::Packet packet = Protocol::PacketSerializer::deserialize(decrypted);
+    Protocol::Packet packet = Protocol::PacketSerializer::deserialize(decrypted, logger);
     if (packet.type != Protocol::TextMessage) {
         logger->error("Invalid type message. Not text message");
         throw std::runtime_error("Invalid type message. Not text message");

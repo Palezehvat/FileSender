@@ -7,7 +7,7 @@
 #include <cstring>
 #include <memory>
 #include "packet.h"
-#include "logs/logger.h"
+#include "logger.h"
 
 namespace Protocol {
 
@@ -15,10 +15,10 @@ namespace Protocol {
 
 class PacketSerializer {
 public:
-    static std::vector<uint8_t> serialize(const Packet& packet);
-    static Packet deserialize(const std::vector<uint8_t>& data);
+    static std::vector<uint8_t> serialize(const Packet& packet, std::shared_ptr<spdlog::logger> logger);
+    static Packet deserialize(const std::vector<uint8_t>& data, std::shared_ptr<spdlog::logger> logger);
 private:
-    static std::shared_ptr<spdlog::logger> logger;
+    static std::shared_ptr<spdlog::logger> getLogger();
 };
 
 } // namespace Protocol;

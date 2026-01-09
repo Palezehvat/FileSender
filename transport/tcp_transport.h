@@ -3,7 +3,7 @@
 
 #include <cstring>
 #include "itransport.h"
-#include "logs/logger.h"
+#include "logger.h"
 
 
 namespace Transport {
@@ -30,7 +30,7 @@ private:
     void recvAll(void* buffer, std::size_t size);
     uint32_t recvUint32();
 
-    TCPTransport(std::shared_ptr<spdlog::logger> logger, Socket socket);
+    TCPTransport(std::shared_ptr<spdlog::logger> logger, std::unique_ptr<Impl>&& impl);
 };
 
 } //namespace Transport

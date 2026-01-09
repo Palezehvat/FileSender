@@ -39,13 +39,6 @@ namespace Transport {
         logger->info("TCP constructor successfully ended");
     }
 
-    TCPTransport::TCPTransport(std::shared_ptr<spdlog::logger> logger, Socket socket) {
-        logger->trace("TCPTransport start initialization (after accept)");
-        impl = std::make_unique<Impl>();
-        impl->socket = socket;
-        logger->info("TCP constructor successfully ended (after accept)");
-    }
-
     void TCPTransport::connect(const std::string& host, uint16_t port) {
         sockaddr_in addr{};
         addr.sin_family = AF_INET;
@@ -115,14 +108,23 @@ namespace Transport {
         logger->info("Listening port: {}", port);
     }
 
+    TCPTransport::TCPTransport(std::shared_ptr<spdlog::logger> logger, std::unique_ptr<Impl>&& impl)
+        : logger(logger) {
+        logger->trace("TCPTransport start initialization (after accept)");
+        this->impl = std::move(impl);
+        logger->info("TCP constructor successfully ended (after accept)");
+    }
+
     std::unique_ptr<ITransport> TCPTransport::accept() {
         sockaddr_in addr{};
         socklen_t addrSize = sizeof(addr); 
 
         Socket clientSocket = ::accept(impl->socket, reinterpret_cast<sockaddr*>(&addr), 
                                                &addrSize);
+        auto clientImpl = std::make_unique<Impl>();
+        clientImpl->socket = clientSocket;
         #ifdef _WIN32
-            if (clientSocket == INVALID_SOCKET) {
+            if (clientSocket == INVALID_SOCKET_VALUE) {
                 int error = WSAGetLastError();
                 logger->critical("Accept failed. WSA error: {}", error);
                 throw std::runtime_error("Accept failed. WSA error " + std::to_string(error));
@@ -133,13 +135,15 @@ namespace Transport {
                 throw std::runtime_error("Accept failed: " + std::string(strerror(errno)));
             }
         #endif
+        
+        char ipStr[INET_ADDRSTRLEN];
+        inet_ntop(AF_INET, &addr.sin_addr, ipStr, sizeof(ipStr));
+        uint16_t port = ntohs(addr.sin_port);
 
-        logger->info("Accepted TCP client");
+        logger->info("Accepted TCP client {}:{}", ipStr, port);
+        std::cout << "Accepted TCP client " << ipStr << ":" << port << std::endl;
         
-        auto client = std::make_unique<TCPTransport>(logger);
-        client->impl->socket = clientSocket;
-        
-        return client;
+        return std::unique_ptr<TCPTransport>(new TCPTransport(logger, std::move(clientImpl)));
     }
 
     void TCPTransport::sendAll(const void* buffer, std::size_t size) {
@@ -240,7 +244,6 @@ namespace Transport {
 
     void TCPTransport::receive(std::vector<uint8_t>& data) {
         uint32_t size = recvUint32();
-
         if (size == 0) {
             data.clear();
             return;
@@ -265,7 +268,6 @@ namespace Transport {
     }
 
     TCPTransport::~TCPTransport() {
-        logger->info("Trying to close socket");
         close();
     }
 

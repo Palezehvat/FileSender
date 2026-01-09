@@ -32,8 +32,8 @@ namespace Logs {
         logger = std::make_shared<spdlog::logger>(nameLogger, fileSink);
 
         spdlog::register_logger(logger);
-        logger->set_level(spdlog::level::debug);
-        logger->flush_on(spdlog::level::debug);
+        logger->set_level(spdlog::level::trace);
+        logger->flush_on(spdlog::level::trace);
         logger->info("Logger created");
     }
 
