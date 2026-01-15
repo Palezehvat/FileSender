@@ -1,6 +1,11 @@
 /**
  * @file logger.h
  * @brief Contains the implementation of project logging
+ * @version 0.1
+ * @date 2026-01-14
+ * 
+ * @copyright Copyright (c) 2026
+ * 
  */
 #ifndef LOGGER_H
 #define LOGGER_H
@@ -15,6 +20,7 @@
 
 /**
  * @namespace Logs
+ * 
  * @brief Contains Logger
  */
 namespace Logs {
@@ -28,6 +34,7 @@ namespace Logs {
  * - logging of sending, response, and errors for the client
  * - logging of all key actions for the server
  * - logging of various levels:
+ * - trace
  * - debug
  * - info
  * - warn
@@ -57,6 +64,6 @@ private:
 
 };
 
-} // nLogger 
+} // namespace nLogger 
 
 #endif // LOGGER_H

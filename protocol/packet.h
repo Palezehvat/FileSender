@@ -1,26 +1,106 @@
+/**
+ * @file packet.h
+ * @brief Contains performance packet
+ * @version 0.1
+ * @date 2026-01-15
+ * 
+ * @copyright Copyright (c) 2026
+ * 
+ */
 #ifndef PACKET_H
 #define PACKET_H
 
 
 #include <cstdint>
 #include <vector>
+#include <iostream>
+#include <typeinfo>
+#include <string>
+#include <memory>
+#include "logger.h"
 
+/**
+ * @namespace Protocol
+ * 
+ * @brief Contains full description of the package
+ */
 namespace Protocol {
 
-enum PacketType : uint8_t {
+/**
+ * @enum TypePacket
+ * 
+ * @brief Describes the type of package
+ * 
+ * Types:
+ * 
+ * - text packet(TextMessage)
+ * 
+ * - metadata of file(FileMeta)
+ * 
+ * - data in file(FileChunk)
+ * 
+ * - end data in file(FileEnd)
+ * 
+ */
+enum TypePacket : uint8_t {
     TextMessage = 1,
     FileMeta = 2,
     FileChunk = 3,
-    FileEnd = 4,
-    HandShake = 5,
-    CodeMessage = 6
+    FileEnd = 4
 };
 
+/**
+ * @enum TypeEncryption
+ * 
+ * @brief Describes the type of encryption
+ * 
+ * Types:
+ * 
+ * - without encryption(NoEncryption)
+ */
+enum TypeEncryption : uint32_t {
+    NoEncryption = 1
+};
+
+/**
+ * @struct PacketHandler 
+ * 
+ * @brief Contains information about header packet
+ * 
+ * Information:
+ * 
+ * - type packet
+ * 
+ * - type encryption
+ * 
+ * - size packet
+ */
+struct PacketHeader {
+    TypePacket typePacket;
+    TypeEncryption typeEncryption;
+    uint32_t sizePacket;
+
+    PacketHeader(const TypePacket& typePacket, const TypeEncryption& typeEncryption,
+                 const uint32_t& sizePacket)
+                 : typePacket(typePacket), typeEncryption(typeEncryption),
+                   sizePacket(sizePacket) {};
+};
+
+// [1 byte type][4 bytes encryption_type][4 bytes data_size][data]
+/**
+ * @struct Packet
+ * 
+ * @brief Contains information about packet: packet header and data
+ * 
+ * In serialization packet to vector<uint8_t>:
+ * 
+ * [1 byte type][4 bytes encryption_type][4 bytes data_size][data]
+ */
 struct Packet {
-    PacketType type;
+    PacketHeader header;
     std::vector<uint8_t> data;
 
-    Packet(const PacketType& type, const std::vector<uint8_t>& data) : type(type), data(data) {};
+    Packet(const PacketHeader& header, const std::vector<uint8_t>& data) : header(header), data(data) {};
 };
 
 } // namespace Protocol

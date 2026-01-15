@@ -268,6 +268,7 @@ namespace Transport {
     }
 
     TCPTransport::~TCPTransport() {
+        logger->trace("TCPTransport deleted");
         close();
     }
 
