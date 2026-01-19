@@ -48,7 +48,8 @@ void Server::run() {
                     packet.header.typeEncryption,
                     decryptedData.size()
                 ),
-                std::move(decryptedData)
+                std::move(decryptedData),
+                logger
             );
 
             dispatcher.dispatch(decryptedPacket);

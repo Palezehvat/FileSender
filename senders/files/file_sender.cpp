@@ -43,7 +43,8 @@ void FileSender::SendMetadata(const std::string& name, const uint32_t& size) {
             Security::SecurityFactory::getTypeEncryption(security, logger),
             encrypted.size()
         ),
-        encrypted
+        encrypted,
+        logger
     );
     auto serialized = Protocol::PacketSerializer::serialize(packet, logger);
 
@@ -60,7 +61,8 @@ void FileSender::SendChunk(const std::vector<uint8_t>& data) {
             Security::SecurityFactory::getTypeEncryption(security, logger),
             encrypted.size()
         ),
-        encrypted
+        encrypted,
+        logger
     );
     auto serialized = Protocol::PacketSerializer::serialize(packet, logger);
 
@@ -75,7 +77,8 @@ void FileSender::SendEnd() {
             Security::SecurityFactory::getTypeEncryption(security, logger),
             0
         ),
-        {}
+        {},
+        logger
     );
     auto serialized = Protocol::PacketSerializer::serialize(packet, logger);
 

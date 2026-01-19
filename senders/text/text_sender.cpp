@@ -20,7 +20,8 @@ void TextSender::sendText(const std::string& text) {
             Security::SecurityFactory::getTypeEncryption(security, logger),
             data.size()
         ),
-        data
+        data,
+        logger
     );
 
     auto serialized = Protocol::PacketSerializer::serialize(packet, logger);

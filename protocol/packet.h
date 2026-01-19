@@ -80,6 +80,13 @@ struct PacketHeader {
     TypeEncryption typeEncryption;
     uint32_t sizePacket;
 
+    /**
+     * @brief Construct a new Packet Header object
+     * 
+     * @param typePacket type packet(TextMessage, FileMeta, FileChunk, FileEnd)
+     * @param typeEncryption type encryption(NoEncryption)
+     * @param sizePacket size packet
+     */
     PacketHeader(const TypePacket& typePacket, const TypeEncryption& typeEncryption,
                  const uint32_t& sizePacket)
                  : typePacket(typePacket), typeEncryption(typeEncryption),
@@ -99,8 +106,21 @@ struct PacketHeader {
 struct Packet {
     PacketHeader header;
     std::vector<uint8_t> data;
-
-    Packet(const PacketHeader& header, const std::vector<uint8_t>& data) : header(header), data(data) {};
+    /**
+     * @brief Construct a new Packet object
+     * 
+     * @param header header packet
+     * @param data main data
+     */
+    Packet(const PacketHeader& header,
+           const std::vector<uint8_t>& data,
+           std::shared_ptr<spdlog::logger> logger)
+         : header(header), data(data) {
+        if (header.sizePacket != data.size()) {
+            logger->error("Not correct size packet was saved");
+            throw std::runtime_error("Not correct size packet was saved");
+        }
+    };
 };
 
 } // namespace Protocol

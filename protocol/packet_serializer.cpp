@@ -13,7 +13,6 @@ namespace Protocol {
 std::vector<uint8_t> PacketSerializer::serialize(const Packet& packet, std::shared_ptr<spdlog::logger> logger) {
     logger->trace("Start serialization packet to vector<uint8_t>");
     std::vector<uint8_t> result;
-    
     const uint32_t dataSize = static_cast<uint32_t>(packet.header.sizePacket);
     const uint32_t sizeAfterHtonl = htonl(dataSize);
 
@@ -64,7 +63,8 @@ Packet PacketSerializer::deserialize(const std::vector<uint8_t>& data, std::shar
         std::vector<uint8_t>(
             data.begin() + headerSize,
             data.end()
-        )
+        ),
+        logger
     );
     logger->trace("End deserialization packet");
     return packet;
