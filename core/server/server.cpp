@@ -41,13 +41,16 @@ void Server::run() {
             std::vector<uint8_t> raw;
             client->receive(raw);
             auto packet = Protocol::PacketSerializer::deserialize(raw, logger);
-            std::cout << packet.header.typeEncryption << std::endl;
             auto security = Security::SecurityFactory::getProvider(
                 keys,
                 logger,
                 packet.header.typeEncryption
             );
-            auto decryptedData = security->decrypt(packet.data);
+            std::vector<uint8_t> decryptedData;
+            if (packet.header.typePacket != Protocol::TypePacket::FileEnd)
+                decryptedData = security->decrypt(packet.data);
+            else
+                decryptedData = {};
             Protocol::Packet decryptedPacket(
                 Protocol::PacketHeader(
                     packet.header.typePacket,
@@ -57,7 +60,9 @@ void Server::run() {
                 std::move(decryptedData),
                 logger
             );
+            logger->info("!5");
             dispatcher.dispatch(decryptedPacket);
+            logger->info("!6");
         }
     } catch (const std::exception& e) {
         logger->error("Session ended: {}", e.what());

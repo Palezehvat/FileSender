@@ -15,10 +15,11 @@ void TextSender::sendText(const std::string& text) {
     logger->trace("Start send text message");
     std::vector<uint8_t> data(text.begin(), text.end());
     auto encrypted = security->encrypt(data);
+    auto type_encryption = Security::SecurityFactory::getTypeEncryption(security, logger);
     Protocol::Packet packet(
         Protocol::PacketHeader(
             Protocol::TypePacket::TextMessage,
-            Security::SecurityFactory::getTypeEncryption(security, logger),
+            type_encryption,
             encrypted.size()
         ),
         encrypted,
@@ -27,7 +28,7 @@ void TextSender::sendText(const std::string& text) {
 
     auto serialized = Protocol::PacketSerializer::serialize(packet, logger);
 
-    transport.send(encrypted);
+    transport.send(serialized);
     logger->info("Send text message successfully");
 }
 
