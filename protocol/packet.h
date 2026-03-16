@@ -59,7 +59,8 @@ enum TypePacket : uint8_t {
  * - without encryption(NoEncryption)
  */
 enum TypeEncryption : uint32_t {
-    NoEncryption = 1
+    NoEncryption = 1,
+    LibsodiumEncryption = 2
 };
 
 /**

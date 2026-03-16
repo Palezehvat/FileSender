@@ -4,7 +4,7 @@
 namespace Senders {
 
 FileReader::FileReader(std::shared_ptr<spdlog::logger> logger, Transport::ITransport& transport,
-                       Security::ISecurity& security, const uint32_t& chunkSize)
+                       std::shared_ptr<Security::ISecurity> security, const uint32_t& chunkSize)
                        : logger(logger), sender(logger, transport, security),
                          chunkSize(chunkSize) {};
 

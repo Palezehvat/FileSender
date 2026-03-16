@@ -42,7 +42,7 @@ public:
      */
     FileSender(std::shared_ptr<spdlog::logger> logger, 
                Transport::ITransport& transport,
-               Security::ISecurity& security);
+               std::shared_ptr<Security::ISecurity> security);
     /**
      * @brief Send metadata to server
      * 
@@ -65,7 +65,7 @@ public:
 private:
     std::shared_ptr<spdlog::logger> logger;
     Transport::ITransport& transport;
-    Security::ISecurity& security;
+    std::shared_ptr<Security::ISecurity> security;
 
 };
 

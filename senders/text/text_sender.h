@@ -39,7 +39,7 @@ public:
      * @param security encryption method
      */
     TextSender(std::shared_ptr<spdlog::logger> logger, Transport::ITransport& transport,
-                  Security::ISecurity& security);
+               std::shared_ptr<Security::ISecurity> security);
     
     /**
      * @brief Send text message to server
@@ -49,8 +49,8 @@ public:
     void sendText(const std::string& text);
 private:
     std::shared_ptr<spdlog::logger> logger;
+    std::shared_ptr<Security::ISecurity> security;
     Transport::ITransport& transport;
-    Security::ISecurity& security;
 };
 
 } // namespace Senders

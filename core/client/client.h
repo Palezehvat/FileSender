@@ -12,6 +12,9 @@
 
 
 #include <memory>
+#include "no_security.h"
+#include "key_exchange.h"
+#include "libsodium_security.h"
 #include "logger.h"
 #include "itransport.h"
 #include "isecurity.h"
@@ -37,14 +40,14 @@ public:
      * 
      * @param logger logger for tracking program execution
      * @param transport data transfer method (implemented protocol)
-     * @param security encryption method
+     * @param keyExchange key exchange for get session keys
      * @param host server IP
      * @param port server port
      * @param chunkSize size of transferred data
      */
     Client(std::shared_ptr<spdlog::logger> logger,
            Transport::ITransport& transport,
-           Security::ISecurity& security,
+           Security::KeyExchange& keyExchange,
            const std::string& host, uint16_t port, const uint32_t& chunkSize = 8 * 1024);
     
     /**
@@ -66,8 +69,9 @@ public:
     ~Client();
 private:
     std::shared_ptr<spdlog::logger> logger;
+    std::shared_ptr<Security::ISecurity> security;
     Transport::ITransport& transport;
-    Security::ISecurity& security;
+    Security::KeyExchange& keyExchange;
     std::string host;
     uint16_t port;
     uint32_t chunkSize;

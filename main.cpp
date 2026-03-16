@@ -2,7 +2,8 @@
 #include <memory>
 
 #include "tcp_transport.h"
-#include "no_security.h"
+#include "libsodium_security.h"
+#include "key_exchange.h"
 #include "logger.h"
 #include "server.h"
 #include "client.h"
@@ -22,7 +23,7 @@ int main(int argc, char* argv[]) {
         std::string mode = argv[2];
 
         Transport::TCPTransport transport(logger);
-        Security::NoSecurity security;
+        Security::KeyExchange key_exchange(logger);
 
         if (mode == "server") {
             if (argc < 3) {
@@ -46,7 +47,7 @@ int main(int argc, char* argv[]) {
             std::string host = argv[3];
             uint16_t port = static_cast<uint16_t>(std::stoi(argv[4]));
 
-            Core::Client client(logger, transport, security, host, port, 64 * 1024);
+            Core::Client client(logger, transport, key_exchange, host, port, 64 * 1024);
 
             logger->info("Connected to {}:{}", host, port);
 

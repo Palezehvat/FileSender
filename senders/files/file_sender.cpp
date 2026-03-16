@@ -19,7 +19,7 @@ void append(std::vector<uint8_t>& buffer, const T& value) {
 
 FileSender::FileSender(std::shared_ptr<spdlog::logger> logger, 
                        Transport::ITransport& transport,
-                       Security::ISecurity& security) :
+                       std::shared_ptr<Security::ISecurity> security) :
                        logger(logger), transport(transport), security(security) {};
 
 void FileSender::SendMetadata(const std::string& name, const uint32_t& size) {
@@ -35,7 +35,7 @@ void FileSender::SendMetadata(const std::string& name, const uint32_t& size) {
     data.insert(data.end(), name.begin(), name.end());
     append(data, fileSize);
     
-    auto encrypted = security.encrypt(data);
+    auto encrypted = security->encrypt(data);
 
     Protocol::Packet packet(
         Protocol::PacketHeader(
@@ -53,7 +53,7 @@ void FileSender::SendMetadata(const std::string& name, const uint32_t& size) {
 }
 
 void FileSender::SendChunk(const std::vector<uint8_t>& data) {
-    auto encrypted = security.encrypt(data);
+    auto encrypted = security->encrypt(data);
 
     Protocol::Packet packet(
         Protocol::PacketHeader(

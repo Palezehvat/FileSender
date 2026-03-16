@@ -44,7 +44,7 @@ public:
      * @param chunkSize size of transferred data
      */
     explicit FileReader(std::shared_ptr<spdlog::logger> logger, Transport::ITransport& transport,
-                        Security::ISecurity& security, const uint32_t& chunkSize);
+                        std::shared_ptr<Security::ISecurity> security, const uint32_t& chunkSize);
     /**
      * @brief Reads a file and sends data to the server
      * 

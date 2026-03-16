@@ -30,18 +30,24 @@ void Server::run() {
     
     try {
         auto client = transport.accept();
+        std::vector<uint8_t> clientPublicKey;
+        client->receive(clientPublicKey);
+        Security::KeyExchange keyExchange(logger);
+        auto serverPublicKey = keyExchange.getPublicKey();
+        client->send(serverPublicKey);
+        auto keys = keyExchange.deriveSharedKey(clientPublicKey, true);
+        auto security = std::make_unique<Security::LibsodiumSecurity>(keys, logger);
         while(true) {
             std::vector<uint8_t> raw;
             client->receive(raw);
-            
             auto packet = Protocol::PacketSerializer::deserialize(raw, logger);
-
+            std::cout << packet.header.typeEncryption << std::endl;
             auto security = Security::SecurityFactory::getProvider(
+                keys,
+                logger,
                 packet.header.typeEncryption
             );
-
             auto decryptedData = security->decrypt(packet.data);
-
             Protocol::Packet decryptedPacket(
                 Protocol::PacketHeader(
                     packet.header.typePacket,
@@ -51,7 +57,6 @@ void Server::run() {
                 std::move(decryptedData),
                 logger
             );
-
             dispatcher.dispatch(decryptedPacket);
         }
     } catch (const std::exception& e) {

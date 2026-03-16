@@ -13,8 +13,11 @@
 
 #include <memory>
 #include <stdexcept>
+#include "logger.h"
 #include "isecurity.h"
 #include "no_security.h"
+#include "key_exchange.h"
+#include "libsodium_security.h"
 #include "packet.h"
 
 /**
@@ -38,10 +41,14 @@ public:
      * @param type type of security
      * @return std::unique_ptr<ISecurity> defining encryption 
      */
-    static std::unique_ptr<ISecurity> getProvider(Protocol::TypeEncryption type) {
+    static std::unique_ptr<ISecurity> getProvider(SessionKeys keys,
+                                                  std::shared_ptr<spdlog::logger> logger,
+                                                  Protocol::TypeEncryption type) {
         switch (type) {
             case Protocol::NoEncryption:
                 return std::make_unique<NoSecurity>();
+            case Protocol::LibsodiumEncryption:
+                return std::make_unique<LibsodiumSecurity>(keys, logger);
             default:
                 throw std::runtime_error("Unknown encryption type");
         }
@@ -54,10 +61,12 @@ public:
      * @param logger logger for tracking program execution
      * @return Type of encryption
      */
-    static Protocol::TypeEncryption getTypeEncryption(const Security::ISecurity& security,
+    static Protocol::TypeEncryption getTypeEncryption(std::shared_ptr<Security::ISecurity> security,
                                     std::shared_ptr<spdlog::logger> logger) {
-        if (dynamic_cast<const Security::NoSecurity*>(&security) != nullptr) {
+        if (std::dynamic_pointer_cast<Security::NoSecurity>(security) != nullptr) {
             return Protocol::TypeEncryption::NoEncryption;
+        } else if (std::dynamic_pointer_cast<Security::LibsodiumSecurity>(security) != nullptr) {
+            return Protocol::TypeEncryption::LibsodiumEncryption;
         }
         logger->error("Unknown security type");
         throw std::runtime_error("Unknown security type");

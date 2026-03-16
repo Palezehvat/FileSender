@@ -18,6 +18,8 @@
 #include "isecurity.h"
 #include "packet_dispatcher.h"
 #include "packet_serializer.h"
+#include "key_exchange.h"
+#include "libsodium_security.h"
 
 /**
  * @namespace Core
