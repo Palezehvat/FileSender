@@ -13,10 +13,11 @@ include(FetchContent)
 
 FetchContent_Declare(
     libsodium
-    GIT_REPOSITORY https://github.com/jedisct1/libsodium.git
-    GIT_TAG 1.0.21-RELEASE
+    GIT_REPOSITORY https://github.com/robinlinden/libsodium-cmake.git
+    GIT_TAG cfebfd3da486d5a86c644c8b47067e5411c7599c
 )
 
+set(SODIUM_DISABLE_TESTS ON)
 FetchContent_MakeAvailable(libsodium)
 
 enable_testing()
@@ -88,13 +89,13 @@ target_link_libraries(transport PRIVATE logger)
 target_link_libraries(protocol PRIVATE logger)
 target_link_libraries(key_exchange PRIVATE logger sodium)
 target_link_libraries(libsodium_security PRIVATE logger sodium key_exchange)
-target_link_libraries(file_sender PRIVATE logger protocol)
-target_link_libraries(file_reader PRIVATE logger file_sender)
-target_link_libraries(text_sender PRIVATE logger protocol)
+target_link_libraries(file_sender PRIVATE logger protocol sodium)
+target_link_libraries(file_reader PRIVATE logger file_sender sodium)
+target_link_libraries(text_sender PRIVATE logger protocol sodium)
 target_link_libraries(file_handler PRIVATE logger)
 target_link_libraries(packet_dispatcher PRIVATE logger)
-target_link_libraries(server PRIVATE logger packet_dispatcher protocol file_handler key_exchange libsodium_security)
-target_link_libraries(client PRIVATE logger file_reader text_sender key_exchange sodium libsodium_security)
+target_link_libraries(server PRIVATE logger packet_dispatcher protocol file_handler key_exchange libsodium_security sodium)
+target_link_libraries(client PRIVATE logger file_reader text_sender key_exchange sodium libsodium_security sodium)
 
 add_executable(app main.cpp)
-target_link_libraries(app logger transport client server)
+target_link_libraries(app logger transport client server sodium)

@@ -10,6 +10,7 @@ target_link_libraries(tests
     protocol
     GTest::GTest
     GTest::Main
+    sodium
 )
 
 include(GoogleTest)
