@@ -68,7 +68,7 @@
 
 ## Сборка
 
-```
+```bash
 mkdir build
 cd build
 cmake .. && make
@@ -77,12 +77,12 @@ cmake .. && make
 ## Запуск
 
 ### Сервер
-```
+```bash
 ./app <name_server_log_file> server <port>
 ```
 
 ### Клиент
-```
+```bash
 ./app <name_client_log_file> client <host> <port>
 ```
 
