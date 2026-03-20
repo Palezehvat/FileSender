@@ -21,6 +21,8 @@ FetchContent_MakeAvailable(libsodium)
 
 enable_testing()
 
+add_subdirectory(tests)
+
 add_library(libsodium_security
     STATIC
     security/libsodium_security.cpp
