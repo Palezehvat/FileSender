@@ -1,0 +1,54 @@
+name: Tests for FileSender
+on: [push, pull_request]
+permissions:
+  contents: write
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Get code
+        uses: actions/checkout@v4
+      - name: Download dependencies
+        run: |
+              sudo apt-get update
+              sudo apt-get install -y \
+                build-essential \
+                libspdlog-dev \
+                cmake git
+              git clone https://github.com/google/googletest.git
+              cd googletest
+              mkdir build
+              cd build
+              cmake ..
+              make
+              sudo make install
+      - name: Create directory for build
+        run: mkdir build
+      - name: Build project
+        run: cd build && cmake .. && make
+
+  tests:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Get code
+        uses: actions/checkout@v4
+      - name: Download dependencies
+        run: |
+              sudo apt-get update
+              sudo apt-get install -y \
+                build-essential \
+                libspdlog-dev \
+                cmake git
+              git clone https://github.com/google/googletest.git
+              cd googletest
+              mkdir build
+              cd build
+              cmake ..
+              make
+              sudo make install
+      - name: Create directory for build
+        run: mkdir build
+      - name: Build project
+        run: cd build && cmake .. && make
+      - name: Start Tests
+        run: ./tests/tests
