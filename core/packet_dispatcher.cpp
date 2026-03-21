@@ -6,7 +6,7 @@ PacketDispatcher::PacketDispatcher(std::shared_ptr<spdlog::logger> logger) : log
 
 void PacketDispatcher::registerHandler(Protocol::TypePacket type,
                                        std::shared_ptr<Handlers::IPacketHandler> handler) {
-    logger->trace("Register new type for handlers: {}", type);
+    logger->trace("Register new type for handlers: {}", static_cast<uint8_t>(type));
     handlers[type] = std::move(handler);
 }
 

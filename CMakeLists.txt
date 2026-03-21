@@ -96,6 +96,7 @@ add_library(client
 )
 
 target_link_libraries(logger PRIVATE spdlog::spdlog)
+target_include_directories(logger PUBLIC ${spdlog_SOURCE_DIR}/include)
 target_link_libraries(transport PRIVATE logger)
 target_link_libraries(protocol PRIVATE logger)
 target_link_libraries(key_exchange PRIVATE logger sodium)

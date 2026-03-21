@@ -48,12 +48,12 @@ void FileHandler::handle(const Protocol::Packet& packet) {
         default:
             logger->error(
                 "FileHandler received invalid packet type: {}",
-                packet.header.typePacket
+                static_cast<uint8_t>(packet.header.typePacket)
             );
             throw std::runtime_error(
                 fmt::format(
                     "FileHandler received invalid packet type: {}",
-                    packet.header.typePacket
+                    static_cast<uint8_t>(packet.header.typePacket)
                 )
             );
             break;

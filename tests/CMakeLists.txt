@@ -8,8 +8,9 @@ target_link_libraries(tests
     key_exchange
     libsodium_security
     protocol
-    GTest::GTest
-    GTest::Main
+    gtest
+    gtest_main
+    spdlog::spdlog
     sodium
 )
 
