@@ -6,7 +6,6 @@ set(CMAKE_CXX_STANDARD_REQUIRED TRUE)
 
 include_directories(transport senders/files senders/text security protocol logs handlers handlers/files handlers/text core core/client core/server)
 
-find_package(spdlog REQUIRED)
 find_package(GTest REQUIRED)
 
 include(FetchContent)
@@ -17,8 +16,15 @@ FetchContent_Declare(
     GIT_TAG cfebfd3da486d5a86c644c8b47067e5411c7599c
 )
 
+FetchContent_Declare(
+    spdlog
+    GIT_REPOSITORY https://github.com/gabime/spdlog.git
+    GIT_TAG v1.17.0
+)
+
 set(SODIUM_DISABLE_TESTS ON)
 FetchContent_MakeAvailable(libsodium)
+FetchContent_MakeAvailable(spdlog)
 
 enable_testing()
 

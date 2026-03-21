@@ -3,7 +3,7 @@ on: [push, pull_request]
 permissions:
   contents: write
 jobs:
-  build:
+  build_on_ubuntu:
     runs-on: ubuntu-latest
     steps:
       - name: Get code
@@ -13,7 +13,6 @@ jobs:
               sudo apt-get update
               sudo apt-get install -y \
                 build-essential \
-                libspdlog-dev \
                 cmake git
               git clone https://github.com/google/googletest.git
               cd googletest
@@ -27,7 +26,7 @@ jobs:
       - name: Build project
         run: cd build && cmake .. && make
 
-  tests:
+  tests_on_ubuntu:
     runs-on: ubuntu-latest
     steps:
       - name: Get code
@@ -37,7 +36,6 @@ jobs:
               sudo apt-get update
               sudo apt-get install -y \
                 build-essential \
-                libspdlog-dev \
                 cmake git
               git clone https://github.com/google/googletest.git
               cd googletest
