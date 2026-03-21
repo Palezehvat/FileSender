@@ -6,9 +6,13 @@ set(CMAKE_CXX_STANDARD_REQUIRED TRUE)
 
 include_directories(transport senders/files senders/text security protocol logs handlers handlers/files handlers/text core core/client core/server)
 
-find_package(GTest REQUIRED)
-
 include(FetchContent)
+
+FetchContent_Declare(
+    googletest
+    GIT_REPOSITORY https://github.com/google/googletest.git
+    GIT_TAG v1.17.0
+)
 
 FetchContent_Declare(
     libsodium
@@ -25,6 +29,7 @@ FetchContent_Declare(
 set(SODIUM_DISABLE_TESTS ON)
 FetchContent_MakeAvailable(libsodium)
 FetchContent_MakeAvailable(spdlog)
+FetchContent_MakeAvailable(googletest)
 
 enable_testing()
 
