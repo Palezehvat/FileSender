@@ -10,7 +10,7 @@ target_link_libraries(tests
     protocol
     gtest
     gtest_main
-    spdlog::spdlog
+    spdlog::spdlog_header_only
     sodium
 )
 

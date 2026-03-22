@@ -22,19 +22,39 @@ namespace Transport {
         Socket socket = INVALID_SOCKET_VALUE;
     };
 
+    static void initializedForWindows(std::shared_ptr<spdlog::logger> logger) {
+        #ifdef _WIN32
+            static int iResult = -1;
+            static WSADATA wsaData;
+
+            if (iResult == 0) return;
+
+            iResult = WSAStartup(MAKEWORD(2,2), &wsaData);
+            if (iResult != 0) {
+                logger->error("WSAStartup failed: {}", iResult);
+                throw std::runtime_error("WSAStartup failed: " + std::to_string(iResult));
+            }
+        #endif
+    }
+
     TCPTransport::TCPTransport(std::shared_ptr<spdlog::logger> logger)
     : logger(logger) {
         logger->trace("TCPTransport start initialization");
         impl =  std::make_unique<Impl>();
         #ifdef _WIN32
+            initializedForWindows(logger);
             impl->socket = ::socket(AF_INET, SOCK_STREAM, IPPROTO_TCP);
         #else
             impl->socket = ::socket(AF_INET, SOCK_STREAM, 0);
         #endif
 
         if (impl->socket == INVALID_SOCKET_VALUE) {
-            logger->warn("TCP socket was not created");
-            throw std::runtime_error("TCP socket was not created");
+            #ifdef _WIN32
+                int err = WSAGetLastError();
+                logger->error("socket() failed with error: {}", err);
+            #endif
+                logger->error("TCP socket was not created");
+                throw std::runtime_error("TCP socket was not created");
         }
         logger->info("TCP constructor successfully ended");
     }
